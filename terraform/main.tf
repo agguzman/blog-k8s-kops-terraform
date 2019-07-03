@@ -1,23 +1,24 @@
 provider "aws" {
-  region = "eu-west-2"
+  region = "us-east-1"
 }
 
-terraform {
-  backend "s3" {
-    bucket = "tf-state-blog"
-    key    = "dev/terraform"
-    region = "eu-west-2"
-  }
-}
+# terraform {
+#   backend "s3" {
+#     bucket = "k8s-sinatraci-com-terraform-state-store"
+#     key    = "dev/terraform"
+#     region = "us-east-1"
+#   }
+# }
 
 locals {
-  azs                    = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
-  environment            = "dev"
-  kops_state_bucket_name = "${local.environment}-kops-state"
+  azs                    = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  environment            = "${var.env}"
+  kops_state_bucket_name = "${local.environment}-${local.kubernetes_cluster_name}-kops-state"
+
   // Needs to be a FQDN
-  kubernetes_cluster_name = "k8s-dev0.domain.com"
+  kubernetes_cluster_name = "k8s.sinatraci.com"
   ingress_ips             = ["10.0.0.100/32", "10.0.0.101/32"]
-  vpc_name                = "${local.environment}-vpc"
+  vpc_name                = "${local.environment}-${local.kubernetes_cluster_name}-vpc"
 
   tags = {
     environment = "${local.environment}"

@@ -1,3 +1,5 @@
 .idea
 ./*.tfstate
 .terraform
+*.log
+.vagrant

@@ -59,3 +59,9 @@ output "kops_s3_bucket" {
 output "kubernetes_cluster_name" {
   value = "${local.kubernetes_cluster_name}"
 }
+
+// Environment
+
+output "env" {
+  value = "${local.environment}"
+}

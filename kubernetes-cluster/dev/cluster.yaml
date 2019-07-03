@@ -1,0 +1,141 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  name: k8s.sinatraci.com
+spec:
+  api:
+    loadBalancer:
+      additionalSecurityGroups:
+      - sg-0a0d2013773c2a48d
+      type: Public
+  authorization:
+    rbac: {}
+  channel: stable
+  cloudProvider: aws
+  configBase: s3://dev-k8s.sinatraci.com-kops-state/k8s.sinatraci.com
+  etcdClusters:
+  - etcdMembers:
+    - instanceGroup: master-us-east-1a
+      name: a
+    - instanceGroup: master-us-east-1b
+      name: b
+    - instanceGroup: master-us-east-1c
+      name: c
+    name: main
+  - etcdMembers:
+    - instanceGroup: master-us-east-1a
+      name: a
+    - instanceGroup: master-us-east-1b
+      name: b
+    - instanceGroup: master-us-east-1c
+      name: c
+    name: events
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubernetesVersion: 1.10.6
+  masterPublicName: api.k8s.sinatraci.com
+  networkCIDR: 10.0.0.0/16
+  networkID: vpc-0e748a64052d35d0b
+  networking:
+    canal: {}
+  nonMasqueradeCIDR: 100.64.0.0/10
+  subnets:
+  - id: subnet-0f3afade9ee68d998
+    name: utility-us-east-1a
+    type: Utility
+    zone: us-east-1a
+  - id: subnet-097e4d185791df669
+    name: utility-us-east-1b
+    type: Utility
+    zone: us-east-1b
+  - id: subnet-0ac223916b3a3574f
+    name: utility-us-east-1c
+    type: Utility
+    zone: us-east-1c
+  - egress: nat-06e0b90d47043e9fe
+    id: subnet-0e2176bbebd78a47e
+    name: us-east-1a
+    type: Private
+    zone: us-east-1a
+  - egress: nat-013b49f040c6ce370
+    id: subnet-032be422fb2eba5d4
+    name: us-east-1b
+    type: Private
+    zone: us-east-1b
+  - egress: nat-033fc2e81cbd22911
+    id: subnet-02cf5318b840747ea
+    name: us-east-1c
+    type: Private
+    zone: us-east-1c
+  topology:
+    dns:
+      type: Public
+    masters: private
+    nodes: private
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: k8s.sinatraci.com
+  name: master-us-east-1a
+spec:
+  image: kope.io/k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17
+  kubernetesVersion: 1.10.6
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - us-east-1a
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: k8s.sinatraci.com
+  name: master-us-east-1b
+spec:
+  image: kope.io/k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17
+  kubernetesVersion: 1.10.6
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - us-east-1b
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: k8s.sinatraci.com
+  name: master-us-east-1c
+spec:
+  image: kope.io/k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17
+  kubernetesVersion: 1.10.6
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - us-east-1c
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: k8s.sinatraci.com
+  name: nodes
+spec:
+  image: kope.io/k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17
+  kubernetesVersion: 1.10.6
+  machineType: t2.small
+  maxSize: 2
+  minSize: 1
+  role: Node
+  subnets:
+  - us-east-1a
+  - us-east-1b
+  - us-east-1c
